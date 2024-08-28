@@ -1,4 +1,4 @@
-from world import World
+from World import World
 
 if __name__ == "__main__":
     # example
