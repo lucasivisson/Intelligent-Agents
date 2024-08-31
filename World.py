@@ -17,13 +17,13 @@ class World():
         # Fill cols with 1
         for col in cols:
             if 0 < col < self.width:  # verify if col is inside limits
-                for i in range(self.height):
-                    if self.environment[i][col] != '#':
-                        self.environment[i][col] = '1'
+                for row in range(self.height):
+                    if self.environment[row][col] != '#':
+                        self.environment[row][col] = '1'
 
         # Fill rows with 1
         for row in rows:
             if 0 < row < self.height:  # verify if row is inside limits
-                for j in range(self.width):
-                    if self.environment[row][j] != '#':
-                        self.environment[row][j] = '1'
+                for col in range(self.width):
+                    if self.environment[row][col] != '#':
+                        self.environment[row][col] = '1'
