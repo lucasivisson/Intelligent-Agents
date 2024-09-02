@@ -13,12 +13,12 @@ class SimpleReactiveAgent():
             self.position = [random.randint(
                 0, world.width), random.randint(0, world.height)]
 
-    def isValidPosition(self, x: int, y: int) -> bool:
-        return 0 <= x < self.world.width and 0 <= y < self.world.height
+    def isValidPosition(self, position: List) -> bool:
+        return 0 <= position[0] < self.world.width and 0 <= position[1] < self.world.height
 
-    def move(self, x: int, y: int):
-        if self.isValidPosition(x, y):
-            self.position = [x, y]
+    def move(self, position: List):
+        if self.isValidPosition(position):
+            self.position = position
 
     def clear(self):
         self.world.environment[self.position[0]][self.position[1]] = '0'
@@ -80,23 +80,28 @@ class SimpleReactiveAgent():
         return self.world.environment[downRightPosition[0]][downRightPosition[1]] if self.isValidPosition(downRightPosition) else None
 
     def getFreeCleanPosition(self):
+        available_positions = []
         if self.getLeft() == "0":
-            return self.moveLeft()
+            available_positions.append(self.moveLeft)
         if self.getUpLeft() == "0":
-            return self.moveUpLeft()
+            available_positions.append(self.moveUpLeft)
         if self.getUp() == "0":
-            return self.moveUp()
+            available_positions.append(self.moveUp)
         if self.getUpRight() == "0":
-            return self.moveUpRight()
+            available_positions.append(self.moveUpRight)
         if self.getRight() == "0":
-            return self.moveRight()
+            available_positions.append(self.moveRight)
         if self.getDownRight() == "0":
-            return self.moveDownRight()
+            available_positions.append(self.moveDownRight)
         if self.getDown() == "0":
-            return self.moveDown()
+            available_positions.append(self.moveDown)
         if self.getDownLeft() == "0":
-            return self.moveDownLeft()
-        self.on = False  # No free space to move, turn off device
+            available_positions.append(self.moveDownLeft)
+
+        if available_positions:
+            random.choice(available_positions)()
+        else:
+            self.on = False  # No free space to move, turn off device
 
     def analyzeAround(self):
         if self.getLeft() == "1":
@@ -115,13 +120,21 @@ class SimpleReactiveAgent():
             return self.moveDown()
         if self.getDownLeft() == "1":
             return self.moveDownLeft()
+        
+    def checkIfCleaned(self):
+        for linha in self.world.environment:
+            if "1" in linha:
+                return
+        self.on = False
+        return
 
     def startCleaning(self):
         self.on = True
         while self.on:
             self.analyzeAround()
             self.clear()
-            self.move()
+            self.getFreeCleanPosition()
+            self.checkIfCleaned()  # No "1"/dirty found, turn off device
 
     def stopCleaning(self):
         self.on = False

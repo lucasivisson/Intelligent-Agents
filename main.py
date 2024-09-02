@@ -1,4 +1,6 @@
 from World import World
+from SimpleReactiveAgent import SimpleReactiveAgent
+import time
 
 if __name__ == "__main__":
     # example
@@ -8,5 +10,18 @@ if __name__ == "__main__":
     world.generateDirt(cols=[0, 1], rows=[2])
 
     # Print result matrix
+    print("\n")
+    print("# World before cleaning:\n")
     for linha in world.environment:
         print(linha)
+    print("\n##############################\n")
+
+    agent = SimpleReactiveAgent(world, [0, 0])
+
+    agent.startCleaning()
+
+    # Print world cleaned
+    print("# World after cleaning:\n")
+    for linha in world.environment:
+        print(linha)
+    print("\n##############################\n")
