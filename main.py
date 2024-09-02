@@ -1,6 +1,7 @@
 from World import World
 from SimpleReactiveAgent import SimpleReactiveAgent
 import time
+import threading
 
 if __name__ == "__main__":
     # example
@@ -11,17 +12,26 @@ if __name__ == "__main__":
 
     # Print result matrix
     print("\n")
-    print("# World before cleaning:\n")
+    print("# World before cleaning (simple agent):\n")
     for linha in world.environment:
         print(linha)
     print("\n##############################\n")
 
     agent = SimpleReactiveAgent(world, [0, 0])
 
-    agent.startCleaning()
+    cleaning_thread = threading.Thread(target=agent.startCleaning)
+    cleaning_thread.start()
+
+    time.sleep(2)
+    print("\n")
+    print("# After 2 seconds we turn off the agent:\n")
+    print("\n##############################\n")
+
+    agent.stopCleaning()
+    cleaning_thread.join()
 
     # Print world cleaned
-    print("# World after cleaning:\n")
+    print("# World after cleaning (simple agent):\n")
     for linha in world.environment:
         print(linha)
     print("\n##############################\n")

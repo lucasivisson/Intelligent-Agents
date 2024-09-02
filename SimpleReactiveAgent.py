@@ -121,20 +121,12 @@ class SimpleReactiveAgent():
         if self.getDownLeft() == "1":
             return self.moveDownLeft()
         
-    def checkIfCleaned(self):
-        for linha in self.world.environment:
-            if "1" in linha:
-                return
-        self.on = False
-        return
-
     def startCleaning(self):
         self.on = True
         while self.on:
             self.analyzeAround()
             self.clear()
             self.getFreeCleanPosition()
-            self.checkIfCleaned()  # No "1"/dirty found, turn off device
 
     def stopCleaning(self):
         self.on = False
