@@ -123,6 +123,7 @@ class SimpleReactiveAgent():
         
     def startCleaning(self):
         self.on = True
+        self.clear()
         while self.on:
             self.analyzeAround()
             self.clear()
