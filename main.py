@@ -26,8 +26,8 @@ def run_simulation(world_size, dirt_configs, obstacle_configs, agent_positions):
             print(linha)
         print("\n##############################\n")
 
-        # Cria o agente simples no mundo com a posição inicial especificada em
-        # threads separadas para que o agente simples possa ser desligado após 2 segundos
+        # Cria o agente reativo simples no mundo com a posição inicial especificada em
+        # threads separadas para que o agente reativo simples possa ser desligado após 2 segundos
         simpleReactiveAgent = SimpleReactiveAgent(worldCleanedBySimpleAgent, agent_position)
         cleaning_thread = threading.Thread(target=simpleReactiveAgent.startCleaning)
         cleaning_thread.start()
@@ -46,22 +46,22 @@ def run_simulation(world_size, dirt_configs, obstacle_configs, agent_positions):
         modelReactiveAgent_scores_measure_1.append(modelReactiveAgent.score_measure_1)
         modelReactiveAgent_scores_measure_2.append(modelReactiveAgent.score_measure_2)
 
-        print(f"\n# Simulação {i+1} - Mundo após a limpeza (Agente simples):\n")
+        print(f"\n# Simulação {i+1} - Mundo após a limpeza (agente reativo simples):\n")
         for linha in worldCleanedBySimpleAgent.environment:
             print(linha)
         print("\n##############################\n")
 
-        print(f"\n# Simulação {i+1} - Mundo após a limpeza (Agente reativo):\n")
+        print(f"\n# Simulação {i+1} - Mundo após a limpeza (Agente reativo baseado em modelo):\n")
         for linha in worldCleanedByReactiveAgent.environment:
             print(linha)
         print("\n##############################\n")
     
         # Mostra as pontuações de cada simulação
-        print(f"Simulação {i+1} (Agente simples) - Pontuação Medida 1: {simpleReactiveAgent.score_measure_1}")
-        print(f"Simulação {i+1} (Agente simples) - Pontuação Medida 2: {simpleReactiveAgent.score_measure_2}")
+        print(f"Simulação {i+1} (Agente reativo simples) - Pontuação Medida 1: {simpleReactiveAgent.score_measure_1}")
+        print(f"Simulação {i+1} (Agente reativo simples) - Pontuação Medida 2: {simpleReactiveAgent.score_measure_2}")
         print("\n##############################\n")
-        print(f"Simulação {i+1} (Agente reativo) - Pontuação Medida 1: {modelReactiveAgent.score_measure_1}")
-        print(f"Simulação {i+1} (Agente reativo) - Pontuação Medida 2: {modelReactiveAgent.score_measure_2}")
+        print(f"Simulação {i+1} (Agente reativo baseado em modelo) - Pontuação Medida 1: {modelReactiveAgent.score_measure_1}")
+        print(f"Simulação {i+1} (Agente reativo baseado em modelo) - Pontuação Medida 2: {modelReactiveAgent.score_measure_2}")
         print("\n##############################\n")
 
     # Calcula as pontuações médias
@@ -70,11 +70,11 @@ def run_simulation(world_size, dirt_configs, obstacle_configs, agent_positions):
     modelReactiveAgent_avg_score_measure_1 = sum(modelReactiveAgent_scores_measure_1) / len(modelReactiveAgent_scores_measure_1)
     modelReactiveAgent_avg_score_measure_2 = sum(modelReactiveAgent_scores_measure_2) / len(modelReactiveAgent_scores_measure_2)
     print(f"\nResultados finais:")
-    print(f"Pontuação média Medida 1 (Agente simples): {simpleReactiveAgent_avg_score_measure_1}")
-    print(f"Pontuação média Medida 2 (Agente simples): : {simpleReactiveAgent_avg_score_measure_2}")
+    print(f"Pontuação média Medida 1 (Agente reativo simples): {simpleReactiveAgent_avg_score_measure_1}")
+    print(f"Pontuação média Medida 2 (Agente reativo simples): : {simpleReactiveAgent_avg_score_measure_2}")
     print("\n##############################\n")
-    print(f"Pontuação média Medida 1 (Agente reativo): {modelReactiveAgent_avg_score_measure_1}")
-    print(f"Pontuação média Medida 2 (Agente reativo): : {modelReactiveAgent_avg_score_measure_2}")
+    print(f"Pontuação média Medida 1 (Agente Agente reativo baseado em modelo): {modelReactiveAgent_avg_score_measure_1}")
+    print(f"Pontuação média Medida 2 (Agente Agente reativo baseado em modelo): : {modelReactiveAgent_avg_score_measure_2}")
 
 if __name__ == "__main__":
     # Tamanho do mundo
