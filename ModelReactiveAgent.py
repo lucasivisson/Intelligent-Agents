@@ -2,20 +2,25 @@ from World import World
 from typing import List
 import random
 
-
 class ModelReactiveAgent():
     def __init__(self, world: World, position: List = None) -> None:
         self.world = world
         self.on = False
         self.dirtySpots = 0
         self.positionsAlreadyCleaned = []
-        if position != None and position[0] <= world.width and position[1] <= world.height and world.environment[position[0]][position[1]] != '#':
+        # Medida 1: Pontos para quadrados limpos
+        self.score_measure_1 = 0  
+        # Medida 2: Pontos para quadrados limpos e penalização por movimento
+        self.score_measure_2 = 0  
+        self.moves = 0  # Contabiliza os movimentos para a Medida 2
+        # Inicializando a posição do agente
+        if position is not None and position[0] <= world.width and position[1] <= world.height and world.environment[position[0]][position[1]] != '#':
             self.position = position
         else:
             self.position = [random.randint(0, world.width - 1), random.randint(0, world.height - 1)]
             while world.environment[self.position[0]][self.position[1]] == '#':
                 self.position = [random.randint(0, world.width - 1), random.randint(0, world.height - 1)]
-            
+
     def scanArea(self):
         count = 0
         for row in self.world.environment:
@@ -29,12 +34,17 @@ class ModelReactiveAgent():
         if self.isValidPosition(position):
             self.position = position
             self.positionsAlreadyCleaned.append(position)
-           
+            self.moves += 1  # Incrementa o número de movimentos para a Medida 2
+            self.score_measure_2 -= 1  # Penaliza 1 ponto por movimento para a Medida 2
+
     def clear(self):
         if self.world.environment[self.position[0]][self.position[1]] == "1":
             self.world.environment[self.position[0]][self.position[1]] = '0'
-            self.dirtySpots -= 1  # Decrease the count of dirty spots
+            self.score_measure_1 += 1  # Incrementa a pontuação da Medida 1 ao limpar um quadrado
+            self.dirtySpots -= 1  # Decrementa o número de manchas sujas restantes
+            self.score_measure_2 += 1  # Incrementa 1 ponto por quadrado limpo na Medida 2
 
+    # Movimentos do agente
     def moveLeft(self):
         self.move([self.position[0], self.position[1] - 1])
 
@@ -59,6 +69,7 @@ class ModelReactiveAgent():
     def moveDownLeft(self):
         self.move([self.position[0] + 1, self.position[1] - 1])
 
+    # Métodos para pegar posições adjacentes
     def getLeft(self):
         leftPosition = [self.position[0], self.position[1] - 1]
         return (self.world.environment[leftPosition[0]][leftPosition[1]], leftPosition) if self.isValidPosition(leftPosition) else (None, leftPosition)
@@ -91,6 +102,7 @@ class ModelReactiveAgent():
         downRightPosition = [self.position[0] + 1, self.position[1] + 1]
         return (self.world.environment[downRightPosition[0]][downRightPosition[1]], downRightPosition) if self.isValidPosition(downRightPosition) else (None, downRightPosition)
 
+    # Métodos para pegar a melhor posição livre para mover
     def getFreeCleanPosition(self):
         availablePositions = []
         
@@ -131,10 +143,24 @@ class ModelReactiveAgent():
         if availablePositions:
             random.choice(availablePositions)[0]()
         else:
-            self.on = False  # No free space to move, turn off device
+            self.on = False  # Sem espaço livre, desliga o agente
 
+    # Método para começar a limpeza
+    def startCleaning(self):
+        self.on = True
+        self.dirtySpots = self.scanArea()
+        print(f"Manchas sujas: {self.dirtySpots}")
+        self.clear()
+        while self.on and self.dirtySpots > 0:
+            self.analyzeAround()
+            self.clear()
+            self.getFreeCleanPosition()
+
+    def stopCleaning(self):
+        self.on = False
 
     def analyzeAround(self):
+        # Análise das posições ao redor
         leftValue, _ = self.getLeft()
         if leftValue == "1":
             return self.moveLeft()
@@ -159,18 +185,3 @@ class ModelReactiveAgent():
         downLeftValue, _ = self.getDownLeft()
         if downLeftValue == "1":
             return self.moveDownLeft()
-        
-    def startCleaning(self):
-        self.on = True
-        self.dirtySpots = self.scanArea()
-        print(self.dirtySpots)
-        self.clear()
-        while self.on and self.dirtySpots > 0:
-            self.analyzeAround()
-            self.clear()
-            self.getFreeCleanPosition()
-            print(self.positionsAlreadyCleaned)
-        print(self.position)
-
-    def stopCleaning(self):
-        self.on = False

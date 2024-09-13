@@ -1,7 +1,7 @@
 from World import World
 from typing import List
 import random
-
+import time
 
 class SimpleReactiveAgent():
     def __init__(self, world: World, position: List = None) -> None:
@@ -12,6 +12,9 @@ class SimpleReactiveAgent():
         else:
             self.position = [random.randint(
                 0, world.width), random.randint(0, world.height)]
+        self.score_measure_1 = 0  # Medida 1: Pontos para quadrados limpos
+        self.score_measure_2 = 0  # Medida 2: Pontos para quadrados limpos e penalização por movimento
+        self.moves = 0  # Contabiliza os movimentos para a Medida 2
 
     def isValidPosition(self, position: List) -> bool:
         return 0 <= position[0] < self.world.width and 0 <= position[1] < self.world.height
@@ -19,10 +22,16 @@ class SimpleReactiveAgent():
     def move(self, position: List):
         if self.isValidPosition(position):
             self.position = position
+            self.score_measure_2 -= 1  # Penaliza um ponto para cada movimento
+            self.moves += 1  # Incrementa o número de movimentos para a Medida 2
 
     def clear(self):
-        self.world.environment[self.position[0]][self.position[1]] = '0'
+        if self.world.environment[self.position[0]][self.position[1]] == "1":
+            self.world.environment[self.position[0]][self.position[1]] = '0'
+            self.score_measure_1 += 1  # Medida 1: Pontos por limpar
+            self.score_measure_2 += 1  # Medida 2: Pontos por limpar
 
+    # Funções de movimento...
     def moveLeft(self):
         self.move([self.position[0], self.position[1] - 1])
 
@@ -101,7 +110,7 @@ class SimpleReactiveAgent():
         if available_positions:
             random.choice(available_positions)()
         else:
-            self.on = False  # No free space to move, turn off device
+            self.on = False  # Sem espaço livre para mover, desligar dispositivo
 
     def analyzeAround(self):
         if self.getLeft() == "1":
@@ -120,14 +129,20 @@ class SimpleReactiveAgent():
             return self.moveDown()
         if self.getDownLeft() == "1":
             return self.moveDownLeft()
-        
+
     def startCleaning(self):
         self.on = True
-        self.clear()
+        self.clear()  # Limpa a posição inicial
         while self.on:
             self.analyzeAround()
             self.clear()
             self.getFreeCleanPosition()
+
+        # Retornar pontuações ao final do processo de limpeza
+        return {
+            'score_measure_1': self.score_measure_1,
+            'score_measure_2': self.score_measure_2
+        }
 
     def stopCleaning(self):
         self.on = False
