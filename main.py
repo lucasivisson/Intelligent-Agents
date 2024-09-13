@@ -1,7 +1,6 @@
 from World import World
 from ModelReactiveAgent import ModelReactiveAgent
 from SimpleReactiveAgent import SimpleReactiveAgent
-import time
 import threading
 import copy
 

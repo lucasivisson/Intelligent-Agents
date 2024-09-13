@@ -8,22 +8,22 @@ class World():
         self.environment: List[List[str]] = [
             ['0' for _ in range(width)] for _ in range(height)]
 
-        # Fill obstacles with '#'
+        # Preencher obstáculos com '#'
         for row, col in obstacles:
             if col < self.width and row < self.height:
                 self.environment[row][col] = '#'
 
     def generateDirt(self, cols: List, rows: List) -> None:
-        # Fill cols with 1
+        # Preencher colunas com 1
         for col in cols:
-            if 0 < col < self.width:  # verify if col is inside limits
+            if 0 < col < self.width:  # verifica se coluna está dentro dos limites
                 for row in range(self.height):
                     if self.environment[row][col] != '#':
                         self.environment[row][col] = '1'
 
-        # Fill rows with 1
+        # Preenche linhas com 1
         for row in rows:
-            if 0 < row < self.height:  # verify if row is inside limits
+            if 0 < row < self.height:  # verfica se linha está dentro dos limites
                 for col in range(self.width):
                     if self.environment[row][col] != '#':
                         self.environment[row][col] = '1'
